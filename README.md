@@ -1,89 +1,109 @@
-# Drug Recommendation System
+# **DISTIL: Data-Free Inversion of Suspicious Trojan Inputs via Latent Diffusion**
 
-## Overview
-This project presents a recommendation system to suggest the most appropriate drugs for specific medical conditions. Using state-of-the-art machine learning techniques, particularly the BERT (Bidirectional Encoder Representations from Transformers) model, the system evaluates various drug features to generate accurate and personalized recommendations.
+## **Overview**
+This repository contains code for **DISTIL**, a novel data-free trigger inversion approach designed to detect and mitigate trojan attacks in deep learning models. The project leverages diffusion models to generate suspicious trigger patterns without requiring access to clean training data, making it a powerful tool for backdoor defense.
 
-## Key Features
-- **Machine Learning Model**: The recommendation system is powered by BERT embeddings, leveraging semantic understanding for enhanced drug recommendations.
-- **Multi-Feature Analysis**: The system incorporates the following features:
-  - Ease of Use
-  - Effectiveness
-  - Price
-  - Reviews
-  - Satisfaction
-- **Evaluation Metrics**:
-  - Mean Average Precision (MAP)
-  - Normalized Discounted Cumulative Gain (NDCG)
+## **Key Features**
+- **Data-Free Trojan Detection:** Uses guided diffusion to generate adversarial triggers.
+- **No Clean Data Required:** Avoids reliance on extensive datasets for backdoor scanning.
+- **High Accuracy & Robustness:** Outperforms existing trigger inversion methods by significant margins.
+- **Scalability:** Supports a variety of datasets and neural architectures.
+- **Evaluation on TrojAI & BackdoorBench Datasets:** Demonstrates superior detection across different attack scenarios.
 
-## Dataset
-The analysis and recommendations are based on a comprehensive dataset with the following variables:
-- **Condition**: Medical condition for which the drug is used.
-- **Drug**: Name of the drug.
-- **EaseOfUse**: User ratings on the drug's ease of use.
-- **Effective**: Ratings on the drug's effectiveness.
-- **Price**: Average price of the drug.
-- **Reviews**: Number of user reviews.
-- **Satisfaction**: Overall satisfaction ratings.
+---
 
-## Methodology
-1. **Data Preparation**:
-   - Cleaned and preprocessed the dataset.
-   - Created a combined feature column for embedding generation.
-2. **Modeling**:
-   - Generated embeddings using the BERT model for combined features.
-   - Computed cosine similarity between embeddings to identify the most relevant drugs.
-3. **Evaluation**:
-   - Assessed the system's performance using MAP and NDCG metrics.
+## **Installation**
+To set up the environment, run the following:
 
-## Visualizations
-Comprehensive visualizations were created to understand the data distribution and relationships, including:
-- Histograms and box plots for numerical variables.
-- Bar charts for categorical variables.
-- Correlation matrices and heatmaps for feature relationships.
-- Scatter and violin plots to explore interactions between features.
+```bash
+git clone <repository-url>
+cd <repository-name>
+pip install -r requirements.txt
+```
 
-## Results
-- **Performance Metrics**:
-  - MAP: 1.000
-  - NDCG: 1.000
-- **Recommendations**: Example drugs recommended for the condition "fever" include:
-  - Chlorpheniram-DM-Acetaminophen
-  - Phenylephrine-DM-Acetaminophen
-  - Cpm-Pseudoeph-DM-Acetaminophen
+Ensure that **PyTorch**, **Torchvision**, and other dependencies are installed.
 
-## Discussion
-The system demonstrates the potential of BERT in processing drug-related data and making accurate recommendations. Key benefits include:
-- Contextual understanding of features.
-- High scalability for different medical conditions.
-- Reliable and interpretable results.
+---
 
-## Future Directions
-- Integration of real-time patient data.
-- Use of advanced models like GPT or more specialized transformers.
-- Enhancement of data privacy and security mechanisms.
+## **Usage**
+### **1. Listing Available GPUs**
+To check if CUDA-enabled GPUs are available:
+```bash
+python list_gpus.py
+```
 
-## Installation
-1. Clone the repository:
-   ```bash
-   git clone <repository-url>
-   ```
-2. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-3. Run the Jupyter Notebook:
-   ```bash
-   jupyter notebook dataanalysis.ipynb
-   ```
+### **2. Running Trigger Inversion**
+To perform trojan scanning and trigger inversion on a trained model:
+```bash
+python run_inversion.py --model_path <path-to-model> --dataset <dataset-name>
+```
 
-## Usage
-1. Prepare the dataset and ensure it matches the required format.
-2. Execute the notebook to preprocess data and generate recommendations.
-3. Analyze the results and visualizations provided.
+Supported datasets:
+- **CIFAR-10**
+- **GTSRB**
+- **Tiny-ImageNet**
+- **Imagenet**
+- **Custom datasets (with minor modifications)**
 
-## Contributors
-- **Sepehr Rezaee** (Shahid Beheshti University)
-- **Mahdi Firouz** (Shahid Beheshti University)
+### **3. Backdoor Mitigation**
+To fine-tune a model and remove trojan triggers:
+```bash
+python mitigation.py --model_path <path-to-model> --dataset <dataset-name>
+```
 
-## License
-This project is licensed under the MIT License.
+---
+
+## **Project Structure**
+```
+├── notebooks/                      # Jupyter Notebooks for experiments
+│   ├── DiffTrojAI_R3.ipynb
+│   ├── DiffTrojAI_R4.ipynb
+│   ├── DiffTrojAI_Round10.ipynb
+│   ├── DiffTrojAI_R11.ipynb
+├── src/                             # Source code directory
+│   ├── backdoor_detection.py        # Backdoor detection using diffusion models
+│   ├── mitigation.py                # Trojan mitigation strategies
+│   ├── model_utils.py               # Model loading and processing utilities
+│   ├── dataset_utils.py             # Dataset loading and preprocessing
+│   ├── visualization.py             # Visualizations for triggers and model predictions
+├── models/                          # Pre-trained and backdoored models
+├── scripts/                         # Helper scripts
+│   ├── list_gpus.py                 # Script to check available GPUs
+│   ├── train_model.py               # Script to train a clean or trojaned model
+├── Diffus_Trojan.pdf                # Paper describing the methodology
+├── requirements.txt                 # Required dependencies
+├── README.md                        # This file
+```
+
+---
+
+## **Evaluation**
+We evaluate **DISTIL** on the **BackdoorBench** and **TrojAI** datasets. Below are some key results:
+
+| Dataset      | Attack Method | DISTIL Accuracy | Improvement Over Baseline |
+|-------------|--------------|----------------|-------------------------|
+| CIFAR-10    | BadNets      | **94.9%**      | +7.1%                    |
+| CIFAR-10    | Blended      | **93.4%**      | +8.2%                    |
+| TinyImageNet| InputAware   | **90.2%**      | +12.4%                   |
+| GTSRB       | TrojanNN     | **86.1%**      | +9.7%                    |
+
+DISTIL successfully reconstructs and identifies triggers while reducing false positives.
+
+---
+
+## **Citation**
+If you use this work, please cite:
+
+```
+@article{anonymous2025distil,
+  title={DISTIL: Data-Free Inversion of Suspicious Trojan Inputs via Latent Diffusion},
+  author={Anonymous},
+  journal={ICCV 2025 Submission},
+  year={2025}
+}
+```
+
+---
+
+## **Acknowledgments**
+This work was conducted as part of the **ICCV 2025 submission**. We thank the **TrojAI** and **BackdoorBench** teams for providing datasets and benchmarks.
