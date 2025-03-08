@@ -1,109 +1,76 @@
-# **DISTIL: Data-Free Inversion of Suspicious Trojan Inputs via Latent Diffusion**
+# LyAm: A Robust Optimization Algorithm for Deep Learning
 
-## **Overview**
-This repository contains code for **DISTIL**, a novel data-free trigger inversion approach designed to detect and mitigate trojan attacks in deep learning models. The project leverages diffusion models to generate suspicious trigger patterns without requiring access to clean training data, making it a powerful tool for backdoor defense.
+## Overview
+This repository contains the implementation of **LyAm**, a novel optimization algorithm inspired by Lyapunov stability principles, designed to enhance deep neural network training, particularly in noisy and non-convex environments. The project includes training scripts for CIFAR-10 and CIFAR-100 datasets using various architectures (ResNet, ViT, MobileNetV2, EfficientNet) and optimizers (LyAm, Adam, AdamW, AdaBelief, Adan, AdaGrad).
 
-## **Key Features**
-- **Data-Free Trojan Detection:** Uses guided diffusion to generate adversarial triggers.
-- **No Clean Data Required:** Avoids reliance on extensive datasets for backdoor scanning.
-- **High Accuracy & Robustness:** Outperforms existing trigger inversion methods by significant margins.
-- **Scalability:** Supports a variety of datasets and neural architectures.
-- **Evaluation on TrojAI & BackdoorBench Datasets:** Demonstrates superior detection across different attack scenarios.
+## Features
+- **Novel Lyapunov-based optimization (LyAm)**: Ensures robust convergence in deep learning tasks.
+- **Support for multiple architectures**: ResNet-50, ResNet-101, ViT, MobileNetV2, EfficientNet-B0.
+- **Dataset augmentation**: Merges FashionMNIST into CIFAR for extended classification tasks.
+- **Multiple optimizer support**: LyAm, Adam, AdamW, AdaBelief, Adan, AdaGrad.
+- **Performance tracking**: Logs training and validation metrics, generates plots.
+- **Reproducibility**: Implements random seed control for consistent experiments.
 
----
+## File Structure
+```
+├── first_ex.py       # Training script for CIFAR architectures (ResNet, ViT, MobileNet, EfficientNet)
+├── second_ex.py      # Training script including dataset merging and LyAm optimizer implementation
+├── test.ipynb        # Jupyter notebook for interactive model training and evaluation
+├── LyapunovOptimizer_ICCV2025.pdf  # Research paper draft explaining LyAm in detail
+└── README.md         # Documentation (this file)
+```
 
-## **Installation**
-To set up the environment, run the following:
+## Installation
+To set up the environment, install the necessary dependencies:
 
 ```bash
-git clone <repository-url>
-cd <repository-name>
-pip install -r requirements.txt
+pip install torch torchvision numpy matplotlib tqdm
 ```
 
-Ensure that **PyTorch**, **Torchvision**, and other dependencies are installed.
+## Usage
+### Running Training Experiments
+To train a model using LyAm on CIFAR-10 with ResNet-50:
 
----
-
-## **Usage**
-### **1. Listing Available GPUs**
-To check if CUDA-enabled GPUs are available:
 ```bash
-python list_gpus.py
+python first_ex.py --dataset cifar10 --arch resnet50 --optimizer lyam --epochs 10 --lr 0.001
 ```
 
-### **2. Running Trigger Inversion**
-To perform trojan scanning and trigger inversion on a trained model:
+To train on CIFAR-100 using MobileNetV2 and AdaBelief:
+
 ```bash
-python run_inversion.py --model_path <path-to-model> --dataset <dataset-name>
+python second_ex.py --dataset cifar100 --arch mobilenet_v2 --optimizer adabelief --epochs 20 --lr 0.0005
 ```
 
-Supported datasets:
-- **CIFAR-10**
-- **GTSRB**
-- **Tiny-ImageNet**
-- **Imagenet**
-- **Custom datasets (with minor modifications)**
+### Running Jupyter Notebook
+To run the notebook interactively:
 
-### **3. Backdoor Mitigation**
-To fine-tune a model and remove trojan triggers:
 ```bash
-python mitigation.py --model_path <path-to-model> --dataset <dataset-name>
+jupyter notebook test.ipynb
 ```
 
----
+## Optimizers
+The repository supports:
+- **LyAm** (Lyapunov-Guided Adam)
+- **Adam**
+- **AdamW**
+- **AdaBelief**
+- **Adan**
+- **AdaGrad**
 
-## **Project Structure**
-```
-├── notebooks/                      # Jupyter Notebooks for experiments
-│   ├── DiffTrojAI_R3.ipynb
-│   ├── DiffTrojAI_R4.ipynb
-│   ├── DiffTrojAI_Round10.ipynb
-│   ├── DiffTrojAI_R11.ipynb
-├── src/                             # Source code directory
-│   ├── backdoor_detection.py        # Backdoor detection using diffusion models
-│   ├── mitigation.py                # Trojan mitigation strategies
-│   ├── model_utils.py               # Model loading and processing utilities
-│   ├── dataset_utils.py             # Dataset loading and preprocessing
-│   ├── visualization.py             # Visualizations for triggers and model predictions
-├── models/                          # Pre-trained and backdoored models
-├── scripts/                         # Helper scripts
-│   ├── list_gpus.py                 # Script to check available GPUs
-│   ├── train_model.py               # Script to train a clean or trojaned model
-├── Diffus_Trojan.pdf                # Paper describing the methodology
-├── requirements.txt                 # Required dependencies
-├── README.md                        # This file
-```
+## Results & Performance
+Experiments in the **LyapunovOptimizer_ICCV2025.pdf** paper show that **LyAm outperforms traditional optimizers in stability and accuracy under noisy conditions**. The optimizer dynamically adjusts learning rates using Lyapunov principles, ensuring better performance in complex deep learning scenarios.
 
----
-
-## **Evaluation**
-We evaluate **DISTIL** on the **BackdoorBench** and **TrojAI** datasets. Below are some key results:
-
-| Dataset      | Attack Method | DISTIL Accuracy | Improvement Over Baseline |
-|-------------|--------------|----------------|-------------------------|
-| CIFAR-10    | BadNets      | **94.9%**      | +7.1%                    |
-| CIFAR-10    | Blended      | **93.4%**      | +8.2%                    |
-| TinyImageNet| InputAware   | **90.2%**      | +12.4%                   |
-| GTSRB       | TrojanNN     | **86.1%**      | +9.7%                    |
-
-DISTIL successfully reconstructs and identifies triggers while reducing false positives.
-
----
-
-## **Citation**
-If you use this work, please cite:
+## Citation
+If you use LyAm in your research, please cite our **ICCV 2025 submission**:
 
 ```
-@article{anonymous2025distil,
-  title={DISTIL: Data-Free Inversion of Suspicious Trojan Inputs via Latent Diffusion},
+@article{LyAm2025,
+  title={LyAm: Robust Non-Convex Optimization for Stable Learning in Noisy and Anomalous Environments},
   author={Anonymous},
-  journal={ICCV 2025 Submission},
+  journal={ICCV},
   year={2025}
 }
 ```
 
----
-
-## **Acknowledgments**
-This work was conducted as part of the **ICCV 2025 submission**. We thank the **TrojAI** and **BackdoorBench** teams for providing datasets and benchmarks.
+## License
+This project is released under the **MIT License**.
